@@ -1,59 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Product = () => {
-  const [shirts, setShirts] = useState([]);
+  const [products , setproducts] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/allproducts")
-      .then((res) => res.json())
-      .then((data) => {
-        const shirtProducts = data.filter(
-          (item) => item.category?.toLowerCase() === "shirt"
-        );
-        setShirts(shirtProducts);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  useEffect(()=>{
+    const datafetch = async () =>{
+      const response = await axios.get('http://localhost:8000/api/allproducts')
+      setproducts(response.data)
+    }
+    datafetch()
+  },[])
 
-  return (
-    <div>
-      <h2>Shirt Products</h2>
+  const shirts = products.filter((item)=>item.category === 'shirt');
+  const kurta = products.filter((item)=>item.category === 'kurta');
+  const maleshoes = products.filter((item)=>item.category === 'shoes' && item.gender === 'male');
+  const femaleshoes = products.filter((item)=>item.category === 'shoes' && item.gender === 'female');
+  const sandals = products.filter((item)=>item.category === 'sandals');
+  const malebags = products.filter((item)=>item.category==='bag' && item.gender === 'male');
+  const femalebags = products.filter((item)=>item.category==='bag' && item.gender === 'female');
 
-      {shirts.length === 0 ? (
-        <p>No shirt products found</p>
-      ) : (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-          {shirts.map((product) => (
-            <div
-              key={product._id}
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                width: "200px",
-              }}
-            >
-              {/* FIRST IMAGE FROM ARRAY */}
-              <img
-                src={
-                  product.images?.[0]
-                }
-                alt={product.name}
-                style={{
-                  width: "100%",
-                  height: "200px",
-                  objectFit: "cover",
-                }}
-              />
-
-              <h4>{product.name}</h4>
-              <p>Category: {product.category}</p>
-              <p>Price: Rs {product.price}</p>
+  const renderProducts = (items) => (
+    <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 m-5'>
+      {
+        items.map((item)=>{
+          return(
+            <div className='p-2 cursor-pointer' key={item._id}>
+              <div>
+                <img src={item.images[0]} alt="" />
+              </div>
+              <div>
+                <h1>{item.name}</h1>
+                <h2 className='text-slate-500'>{item.description}</h2>
+                <h1>RS : {item.price}</h1>
+              </div>
             </div>
-          ))}
-        </div>
-      )}
+          )
+        })
+      }
     </div>
   );
-};
+
+  return(
+    <>
+      <h2 className='text-2xl font-bold m-5'>Shirts</h2>
+      {renderProducts(shirts)}
+
+      <h2 className='text-2xl font-bold m-5'>Kurta</h2>
+      {renderProducts(kurta)}
+
+      <h2 className='text-2xl font-bold m-5'>Male Shoes</h2>
+      {renderProducts(maleshoes)}
+
+      <h2 className='text-2xl font-bold m-5'>Female Shoes</h2>
+      {renderProducts(femaleshoes)}
+
+      <h2 className='text-2xl font-bold m-5'>Sandals</h2>
+      {renderProducts(sandals)}
+
+      <h2 className='text-2xl font-bold m-5'>Male Bags</h2>
+      {renderProducts(malebags)}
+
+      <h2 className='text-2xl font-bold m-5'>Female Bags</h2>
+      {renderProducts(femalebags)}
+    </>
+  )
+}
 
 export default Product;
