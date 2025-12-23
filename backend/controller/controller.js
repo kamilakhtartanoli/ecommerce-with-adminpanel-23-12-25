@@ -1,7 +1,8 @@
 const { Admin } = require("../models/admin");
 const {products } = require("../models/product");
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { database } = require("../config/database");
 
 
 const productfunction = async (req,res) =>{
@@ -22,6 +23,7 @@ try {
  
 const allproducts = async (req , res) => {
   try {
+    await database()
     const alldata =  await products .find({});
     res.status(200).json(alldata)
   } catch (error) {

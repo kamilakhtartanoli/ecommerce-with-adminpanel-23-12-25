@@ -7,13 +7,13 @@ const cors = require('cors')
 const app = express();
 const port = process.env.PORT || 8001;
 
-database();
+
 
 // ✅ IMPORTANT — must be before routes
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+database();
 app.use('/api', router);
 
 app.listen(port, () => {
