@@ -23,7 +23,6 @@ try {
  
 const allproducts = async (req , res) => {
   try {
-    await database()
     const alldata =  await products .find({});
     res.status(200).json(alldata)
   } catch (error) {
